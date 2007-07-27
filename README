@@ -1,0 +1,28 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1972
+
+This "script" is my initial attempt to ease a typical task that used to frustrate me: changing and moving around parameters in a typical function call.
+
+The code is written for C/C++ programmers (as well as language that inherit that syntax): change aap( "noot", &mies ) to aap( &mies, "noot" ) in a single keystroke if you want.
+
+I'm providing this code in the hope it will help some people out. It's not a plug-in. The code works nicely though.
+
+Note that the current code does NOT handle multi-line parameter lists. This is on the TODO list.
+
+Functions:
+SavePositions and RestorePosiions: save and restore visual and cursor position respectively. Can be called multiple times. Uses script-global variables.
+InsideQuotedString: tries to determine if the cursor is inside a quoted string in a very imprecise way. Only useful to call if something strange is happening (like operator [( not working).
+ParamRangeList: the brain stem. Constructs a list of virtual column offsets for the current parameter context.
+CurrentPosition: determine the offset in the list returned by ParamRangeList based on the current cursor position.
+ShiftCurrentParam: function to substitute a parameter with another based on a delta in the offset of the list ParamRangeList returned. (e.g. -1 substitutes the CurrentPosition parameter with the one to the left).
+
+Example usage (assuming g:mapleader set):
+exec "nmap " .g:mapleader."p :call VisualizeParameter(0)<CR>"
+" if this is false shifting a parameter at offset 0 to left is an error, trivially analogous case for right shift
+" if it's true a shift wraps around list boundaries
+let g:param_shift_round_robin = 1
+exec "nmap " .g:mapleader."< :call ShiftCurrentParam(-1)<CR>"
+exec "nmap " .g:mapleader."> :call ShiftCurrentParam(1)<CR>"
+
+Everything seems to be sort of robust, I've done some tests, but no guarantees. Typical BSD license conditions apply.
+
+N.
